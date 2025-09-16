@@ -5,13 +5,15 @@ from typing import Optional
 import tkinter as tk
 
 class CameraManager:
-    def __init__(self, camera_index=0, use_camera=True, video_path: Optional[str]=None, paused_buffer_max=2000, window_name="Camera"):
+    def __init__(self, camera_index=0, use_camera=True, video_path: Optional[str]=None,
+                 paused_buffer_max=2000, window_name="Camera", adaptive_scaling=True):
         
         # for initialization
         self.use_camera = bool(use_camera)
         self.video_path = video_path
         self.camera_index = camera_index
         self.window_name = window_name
+        self.adaptive_scaling = adaptive_scaling  # NEW PARAMETER
 
         if (not self.use_camera) and (self.video_path is not None):
             self.cap = cv2.VideoCapture(self.video_path)
@@ -71,6 +73,8 @@ class CameraManager:
     # FRAME UTILS =======================================
     def _downscale_if_needed(self, frame):
         if frame is None:
+            return frame
+        if not self.adaptive_scaling:
             return frame
         h, w = frame.shape[:2]
         if w > 800:

@@ -1,6 +1,9 @@
 import cv2
+from python.detect import *
+from python.annotate import *
 
 curr_frame = None
+curr_detections = []
 
 def tracking_pipeline(next_frame):
     
@@ -10,12 +13,16 @@ def tracking_pipeline(next_frame):
     if next_frame is None:
         return None
     if curr_frame is None:
-        curr_frame = next_frame.copy().astype("float32")
+        curr_frame = next_frame.copy()
         return next_frame
 
+    final_frame = None
     # actual pipeline with curr and next frame
-    diff = cv2.absdiff(next_frame, curr_frame.astype("uint8"))
+    bboxes = detect_people_bboxes(curr_frame)
+    final_frame = annotate_bbox(curr_frame, bboxes)
 
     # update current frame
-    curr_frame = next_frame.copy().astype("float32")
-    return diff
+    curr_frame = next_frame.copy()
+
+    # return final frame
+    return final_frame
