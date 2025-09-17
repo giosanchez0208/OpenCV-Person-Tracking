@@ -1,6 +1,6 @@
 import cv2
 
-def annotate_bbox(frame, bboxes, label="person"):
+def annotate_bbox(frame, bboxes, label=""):
     out = frame.copy()
 
     for idx, (x1, y1, x2, y2, conf) in enumerate(bboxes):
@@ -8,7 +8,7 @@ def annotate_bbox(frame, bboxes, label="person"):
         color = ((37*idx) % 255, (91*idx) % 255, (151*idx) % 255)
         bbox_thickness = max(2, int(4 * conf))
         cv2.rectangle(out, (x1, y1), (x2, y2), color, bbox_thickness)
-        id_text = f"{label} {conf:.2f}"
+        id_text = label(idx) if callable(label) else f"{label} {conf:.2f}"
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = 0.5
         font_thickness = 1
