@@ -57,9 +57,10 @@ def tracking_pipeline(next_frame):
     # Prepare bboxes for annotation
     annotated_bboxes = []
     for entity in curr_tracked_entities:
-        x1, y1, x2, y2 = entity.bbox[:4]
-        conf = entity.bbox[4] if len(entity.bbox) > 4 else 0.5
-        annotated_bboxes.append((x1, y1, x2, y2, conf))
+        if entity.age == 0:
+            x1, y1, x2, y2 = entity.bbox[:4]
+            conf = entity.bbox[4] if len(entity.bbox) > 4 else 0.5
+            annotated_bboxes.append((x1, y1, x2, y2, conf))
     
     # Annotate the frame
     annotated_frame = annotate_bbox(next_frame, annotated_bboxes, label=lambda idx: f"{curr_tracked_entities[idx].id}")
