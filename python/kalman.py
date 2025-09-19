@@ -1,6 +1,6 @@
 import numpy as np
 
-class KalmanTracker:
+class PointKalmanTracker:
     def __init__(self, initial_pos):
         # state: [x, y, vx, vy, ax, ay]
         self.x = np.array([[initial_pos[0]], [initial_pos[1]], [0], [0], [0], [0]], dtype=float)
@@ -65,3 +65,71 @@ class KalmanTracker:
     
     def get_acceleration(self):
         return (self.x[4, 0], self.x[5, 0])
+    
+class BBoxGroupKalmanTracker:
+    def __init__(self, initial_bbox):
+        """
+        Initializes four Kalman trackers, one for each corner of the bounding box.
+        initial_bbox: (x1, y1, x2, y2) -> top-left, bottom-right
+        """
+        x1, y1, x2, y2 = initial_bbox
+        self.trackers = {
+            "tl": PointKalmanTracker((x1, y1)),  # top-left
+            "tr": PointKalmanTracker((x2, y1)),  # top-right
+            "bl": PointKalmanTracker((x1, y2)),  # bottom-left
+            "br": PointKalmanTracker((x2, y2)),  # bottom-right
+        }
+
+    def predict(self):
+        """
+        Predict the next positions of all four corners.
+        Returns bbox in (x1, y1, x2, y2) format.
+        """
+        tl = self.trackers["tl"].predict()
+        tr = self.trackers["tr"].predict()
+        bl = self.trackers["bl"].predict()
+        br = self.trackers["br"].predict()
+
+        # reconstruct bbox: top-left and bottom-right
+        x1 = int(min(tl[0], bl[0]))
+        y1 = int(min(tl[1], tr[1]))
+        x2 = int(max(tr[0], br[0]))
+        y2 = int(max(bl[1], br[1]))
+
+        return (x1, y1, x2, y2)
+
+    def update(self, new_bbox):
+        """
+        Update all four corner trackers with the new bbox measurement.
+        new_bbox: (x1, y1, x2, y2)
+        """
+        x1, y1, x2, y2 = new_bbox
+        self.trackers["tl"].update((x1, y1))
+        self.trackers["tr"].update((x2, y1))
+        self.trackers["bl"].update((x1, y2))
+        self.trackers["br"].update((x2, y2))
+
+    def get_bbox(self):
+        """
+        Return the current best estimate of the bbox
+        based on the four tracked corners.
+        """
+        tl = self.trackers["tl"].x
+        tr = self.trackers["tr"].x
+        bl = self.trackers["bl"].x
+        br = self.trackers["br"].x
+
+        x1 = int(min(tl[0, 0], bl[0, 0]))
+        y1 = int(min(tl[1, 0], tr[1, 0]))
+        x2 = int(max(tr[0, 0], br[0, 0]))
+        y2 = int(max(bl[1, 0], br[1, 0]))
+
+        return (x1, y1, x2, y2)
+    
+    def get_velocities(self):
+        """Return velocities for all four corners."""
+        return {k: t.get_velocity() for k, t in self.trackers.items()}
+    
+    def get_accelerations(self):
+        """Return accelerations for all four corners."""
+        return {k: t.get_acceleration() for k, t in self.trackers.items()}
