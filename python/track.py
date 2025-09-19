@@ -5,9 +5,9 @@ from python.kalman import BBoxGroupKalmanTracker
 from python.confusion import calculate_midpoint
 
 DISTANCE_LIMIT = 1000
-IOU_THRESHOLD = 0.1  # Minimum IoU to consider a match valid
+IOU_THRESHOLD = 0.3
 MAX_AGE = 20
-SIZE_CHANGE_THRESHOLD = 2.0  # Maximum allowed size ratio change
+SIZE_CHANGE_THRESHOLD = 2.0
 
 class MultiObjectTracker:
     """

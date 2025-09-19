@@ -1,4 +1,5 @@
 import cv2
+import hashlib
 
 def annotate_bbox(frame, bboxes, label=""):
     out = frame.copy()
@@ -9,6 +10,18 @@ def annotate_bbox(frame, bboxes, label=""):
         bbox_thickness = max(2, int(4 * conf))
         cv2.rectangle(out, (x1, y1), (x2, y2), color, bbox_thickness)
         id_text = label(idx) if callable(label) else f"{label} {conf:.2f}"
+        
+        # Use a hash of the label text to generate a consistent seed
+        seed = int(hashlib.sha256(id_text.encode('utf-8')).hexdigest(), 16) % 16777216
+        
+        # Generate a color from the seed
+        r = (seed & 0xFF0000) >> 16
+        g = (seed & 0x00FF00) >> 8
+        b = (seed & 0x0000FF)
+        color = (b, g, r) # OpenCV uses BGR format
+        
+        bbox_thickness = max(2, int(4 * conf))
+        cv2.rectangle(out, (x1, y1), (x2, y2), color, bbox_thickness)
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = 0.5
         font_thickness = 1

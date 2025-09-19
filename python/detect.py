@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 
-MODEL_BBOX = "yolov8s.pt"
+MODEL_BBOX = "yolov8l.pt"
 MODEL_CONF_THRES = 0.60
 DETECTED_CLASS = 0 # person class in COCO
 
