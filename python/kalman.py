@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.linalg import solve, LinAlgError
 
 def create_state_vector(bbox):
     x1, y1, x2, y2 = bbox
