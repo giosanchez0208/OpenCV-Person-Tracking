@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import cv2
 from python.detect import detect_people_bboxes
 from python.annotate import annotate_bbox
 from python.identify import identify
