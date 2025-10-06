@@ -24,7 +24,7 @@ class PlaybackManager:
             processed = self._processor(self.current_frame.copy())
             return processed
         except Exception:
-            # If processing fails, fallback to the unmodified frame.
+            # if processing fails, fallback to the unmodified frame.
             return self.current_frame
         
 _playback_manager: Optional[PlaybackManager] = None
