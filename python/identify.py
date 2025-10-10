@@ -3,7 +3,7 @@ from collections import deque
 from typing import Deque, Tuple, Any, List, Optional
 
 import python.kalman as kalman
-import python.resnet as resnet
+import python.model as model
 
 MAX_ENTITY_MEMORY = 8 # how many past state vectors and embeddings to keep
 
@@ -43,21 +43,5 @@ class Memory:
 memory = Memory()
 
 def identify(frame, curr_bboxes, next_bboxes):
-    global memory
-
-    # if no memory yet, initialize memory with current bboxes
-
-    if memory == None or memory.curr_entities is None:
-        memory.curr_entities = []
-        for i, bbox in enumerate(curr_bboxes):
-            e = Entity(
-                id=i,
-                bbox=bbox,
-                state_vector=kalman.create_state_vector(bbox),
-                resnet_embedding=resnet.get_resnet_embedding(frame, bbox)
-            )
-            memory.curr_entities.append(e)
-
-    identified_bbox_ids = list(range(len(curr_bboxes)))
-    
+    identified_bbox_ids = {i: i for i in range(len(next_bboxes))}
     return identified_bbox_ids
