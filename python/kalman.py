@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.linalg import solve, LinAlgError
 
 from typing import Tuple, Optional
 
