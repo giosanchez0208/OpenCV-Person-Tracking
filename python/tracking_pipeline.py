@@ -24,8 +24,17 @@ def tracking_pipeline(next_frame):
     if tracker.curr_frame is None:
         tracker.curr_frame = next_frame.copy()
         tracker.curr_bboxes = detect_people_bboxes(next_frame)
-        tracker.curr_bbox_ids = {i: i for i in range(len(tracker.curr_bboxes))}
-        return next_frame
+        
+        # Initialize memory with first frame detections
+        tracker.curr_bbox_ids = identify(next_frame, [], tracker.curr_bboxes)
+        
+        # Annotate first frame
+        final_frame = next_frame.copy()
+        for i, bbox in enumerate(tracker.curr_bboxes):
+            bbox_id = tracker.curr_bbox_ids.get(i, i)
+            final_frame = annotate_bbox(final_frame, bbox, label=str(bbox_id))
+        
+        return final_frame
 
     # 1. detect new bboxes in next frame
     next_bboxes = detect_people_bboxes(next_frame)

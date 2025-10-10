@@ -24,7 +24,11 @@ TRANSFORM = transforms.Compose([
 ])
 
 def take_cropping(frame, bbox):
-    x1, y1, x2, y2 = map(int, bbox)
+    if len(bbox) == 5:
+        x1, y1, x2, y2, _ = bbox
+    else:
+        x1, y1, x2, y2 = bbox
+    x1, y1, x2, y2 = map(int, [x1, y1, x2, y2])
     return frame[y1:y2, x1:x2]
 
 def remove_bg(image):
