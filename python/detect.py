@@ -1,15 +1,14 @@
 from ultralytics import YOLO
 
-MODEL_BBOX = "yolov8s.pt"
+MODEL_BBOX = "yolov8n.pt"
 MODEL_CONF_THRES = 0.60
 DETECTED_CLASS = 0 # person class in COCO
-
-def detect_people_bboxes(image, model_path=MODEL_BBOX, conf_thres=MODEL_CONF_THRES):
-    # Load model
-    model = YOLO(model_path, verbose=False)
+model = YOLO(MODEL_BBOX, verbose=False)
+    
+def detect_people_bboxes(image):
 
     # Run inference with NMS
-    results = model(image, conf=conf_thres, verbose=False, iou=0.45)
+    results = model(image, conf=MODEL_CONF_THRES, verbose=False, iou=0.45)
 
     bboxes = []
     seen_boxes = set()  # Track seen boxes to avoid duplicates

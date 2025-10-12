@@ -32,24 +32,7 @@ def take_cropping(frame, bbox):
     return frame[y1:y2, x1:x2]
 
 def remove_bg(image):
-    results = SEG_MODEL.predict(image, verbose=False)
-    mask = np.zeros(image.shape[:2], dtype=np.uint8)
-
-    person_found = False
-    for result in results:
-        for i, cls in enumerate(result.boxes.cls):
-            if int(cls) == 0:
-                person_found = True
-                seg_mask = result.masks.data[i].cpu().numpy()
-                seg_mask = cv2.resize(seg_mask, (image.shape[1], image.shape[0]))
-                seg_mask = (seg_mask > 0.5).astype(np.uint8) * 255
-                mask = np.maximum(mask, seg_mask)
-
-    if not person_found or np.count_nonzero(mask) == 0:
-        return None
-
-    fg = cv2.bitwise_and(image, image, mask=mask)
-    return fg
+    return image
 
 
 def letterbox_image(image):
