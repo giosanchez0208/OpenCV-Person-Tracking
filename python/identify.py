@@ -42,6 +42,7 @@ def identify(frame, curr_bboxes, next_bboxes):
         detections.append((bbox, embedding))
     
     # Global assignment: Find optimal detection-entity pairing
+    # Global assignment: Find optimal detection-entity pairing
     matches, unmatched_detections, unmatched_entities = match_detections_to_entities(
         detections, memory.curr_entities, SIMILARITY_THRESHOLD, VERBOSE_LOGGING
     )
