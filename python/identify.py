@@ -4,7 +4,7 @@ import python.model as model
 from python.identify_utils import Entity, Memory, match_detections_to_entities
 from python.kalman import BBoxKalmanFilter
 
-SIMILARITY_THRESHOLD = 0.20
+SIMILARITY_THRESHOLD = 0.30
 TTL_THRESHOLD = 1000
 OCCLUSION_TTL = 30  # More lenient TTL for occluded entities (Kalman keeps them alive)
 VERBOSE_LOGGING = False

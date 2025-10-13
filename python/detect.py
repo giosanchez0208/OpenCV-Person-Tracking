@@ -1,8 +1,8 @@
 from ultralytics import YOLO
 
 MODEL_BBOX = "yolov8n.pt"
-MODEL_CONF_THRES = 0.60
-DETECTED_CLASS = 0 # person class in COCO
+MODEL_CONF_THRES = 0.30
+DETECTED_CLASS = 0
 model = YOLO(MODEL_BBOX, verbose=False)
     
 def detect_people_bboxes(image):
